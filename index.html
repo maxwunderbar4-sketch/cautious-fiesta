@@ -78,6 +78,13 @@
     yesBtn.addEventListener("click", () => {
       msg.textContent = "Yaaay! 💖";
       gifwrap.style.display = "block";
+      // 🎆 Feuerwerk / Confetti
+confetti({
+  particleCount: 150,
+  spread: 80,
+  origin: { y: 0.6 }
+});
+
 
       // sorgt dafür, dass das GIF wirklich neu startet (wichtig bei manchen Browsern)
       const src = gif.src;
@@ -106,5 +113,7 @@ noBtn.addEventListener("click", () => {
     if (a === "yes") { yesBtn.click(); }
     if (a === "no")  { msg.textContent = "Hmm… noch unsicher? 🥺"; }
   </script>
+ <!-- Confetti / Feuerwerk -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script> 
 </body>
 </html>
