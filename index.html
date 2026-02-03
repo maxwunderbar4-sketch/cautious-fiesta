@@ -87,16 +87,19 @@
       setAnswer("yes");
     });
 
-    noBtn.addEventListener("click", () => {
-      msg.textContent = "Oh no 😭 (aber ich frage einfach nochmal!)";
-      gifwrap.style.display = "none";
+  let scale = 1;
 
-      // kleiner Spaß: Ja-Button wird etwas „verlockender“
-      yesBtn.style.transform = "scale(1.06)";
-      setTimeout(() => yesBtn.style.transform = "", 150);
+noBtn.addEventListener("click", () => {
+  msg.textContent = "Oh no 😭 Versuch es nochmal...";
 
-      setAnswer("no");
-    });
+  // Ja-Button wird jedes Mal größer
+  scale += 0.25;
+  yesBtn.style.transform = `scale(${scale})`;
+
+  // kleines Zittern beim Nein-Button
+  noBtn.style.transform = "scale(0.95)";
+  setTimeout(() => noBtn.style.transform = "", 150);
+});
 
     // Wenn Link mit Parameter geteilt wird, Zustand anzeigen
     const a = new URLSearchParams(location.search).get("a");
