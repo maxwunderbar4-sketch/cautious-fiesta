@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Valentine?</title>
+  <style>
+    :root { --bg:#fff6fb; --card:#ffffff; --text:#2b2b2b; --pink:#ff4d8d; --gray:#6b7280; }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body {
+      margin: 0; min-height: 100vh; display: grid; place-items: center;
+      background: radial-gradient(1200px 600px at 50% 0%, #ffe3f0 0%, var(--bg) 45%, #fff 100%);
+      color: var(--text);
+      padding: 24px;
+    }
+    .card{
+      width: min(560px, 100%);
+      background: var(--card);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 60px rgba(255, 77, 141, .18);
+      border: 1px solid rgba(255,77,141,.18);
+      text-align: center;
+    }
+    h1 { margin: 0 0 18px; font-size: clamp(24px, 4vw, 34px); }
+    .btns { display: flex; gap: 12px; justify-content: center; margin: 16px 0 6px; flex-wrap: wrap; }
+    button{
+      border: 0; border-radius: 14px; padding: 12px 18px;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      transition: transform .08s ease, box-shadow .2s ease, opacity .2s ease;
+      min-width: 140px;
+    }
+    button:active{ transform: scale(.98); }
+    .yes{ background: var(--pink); color: white; box-shadow: 0 12px 24px rgba(255,77,141,.25); }
+    .no{ background: #eef2f7; color: #111827; }
+    .hint{ color: var(--gray); font-size: 14px; margin-top: 10px; }
+    .msg{ margin-top: 14px; font-size: 16px; font-weight: 600; }
+    .gifwrap{ margin-top: 18px; display:none; }
+    .gifwrap img{ width: min(360px, 90%); border-radius: 18px; box-shadow: 0 10px 24px rgba(0,0,0,.12); }
+    .tiny{ margin-top: 14px; font-size: 12px; color: var(--gray); }
+    a{ color: var(--pink); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Would you be my valentine? 💘</h1>
+
+    <div class="btns">
+      <button class="yes" id="yesBtn">Ja</button>
+      <button class="no" id="noBtn">Nein</button>
+    </div>
+
+    <div class="msg" id="msg"></div>
+
+    <div class="gifwrap" id="gifwrap" aria-live="polite">
+      <!-- GIF austauschen: einfach eine andere GIF-URL einsetzen -->
+      <img id="gif" alt="cute gif" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" />
+    </div>
+
+    <div class="hint">Tipp: Du kannst das GIF später durch dein Lieblings-GIF ersetzen.</div>
+    <div class="tiny">Made with 💗</div>
+  </main>
+
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn  = document.getElementById("noBtn");
+    const msg    = document.getElementById("msg");
+    const gifwrap= document.getElementById("gifwrap");
+    const gif    = document.getElementById("gif");
+
+    // optional: merkt sich die Antwort in der URL (?a=yes / ?a=no)
+    function setAnswer(a){
+      const url = new URL(window.location.href);
+      url.searchParams.set("a", a);
+      history.replaceState({}, "", url);
+    }
+
+    yesBtn.addEventListener("click", () => {
+      msg.textContent = "Yaaay! 💖";
+      gifwrap.style.display = "block";
+
+      // sorgt dafür, dass das GIF wirklich neu startet (wichtig bei manchen Browsern)
+      const src = gif.src;
+      gif.src = "";
+      gif.src = src;
+
+      setAnswer("yes");
+    });
+
+    noBtn.addEventListener("click", () => {
+      msg.textContent = "Oh no 😭 (aber ich frage einfach nochmal!)";
+      gifwrap.style.display = "none";
+
+      // kleiner Spaß: Ja-Button wird etwas „verlockender“
+      yesBtn.style.transform = "scale(1.06)";
+      setTimeout(() => yesBtn.style.transform = "", 150);
+
+      setAnswer("no");
+    });
+
+    // Wenn Link mit Parameter geteilt wird, Zustand anzeigen
+    const a = new URLSearchParams(location.search).get("a");
+    if (a === "yes") { yesBtn.click(); }
+    if (a === "no")  { msg.textContent = "Hmm… noch unsicher? 🥺"; }
+  </script>
+</body>
+</html>
