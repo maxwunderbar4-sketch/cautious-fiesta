@@ -62,109 +62,103 @@
     <div class="tiny">Made with 💗</div>
   </main>
 
-  <!-- Confetti-Bibliothek: MUSS vor deinem Script geladen werden -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Confetti-Bibliothek (muss VOR deinem Script geladen werden) -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-  <script>
-    const yesBtn  = document.getElementById("yesBtn");
-    const noBtn   = document.getElementById("noBtn");
-    const msg     = document.getElementById("msg");
-    const gifwrap = document.getElementById("gifwrap");
-    const gif     = document.getElementById("gif");
+<script>
+  const yesBtn  = document.getElementById("yesBtn");
+  const noBtn   = document.getElementById("noBtn");
+  const msg     = document.getElementById("msg");
+  const gifwrap = document.getElementById("gifwrap");
+  const gif     = document.getElementById("gif");
 
-    // optional: merkt sich die Antwort in der URL (?a=yes / ?a=no)
-    function setAnswer(a){
-      const url = new URL(window.location.href);
-      url.searchParams.set("a", a);
-      history.replaceState({}, "", url);
-    }
+  // URL speichern (?a=yes oder ?a=no)
+  function setAnswer(a) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("a", a);
+    history.replaceState({}, "", url);
+  }
 
-    // 💖 Großes Herz-Konfetti / Feuerwerk
-    function heartConfettiBig() {
-      const duration = 1200; // ms
-      const end = Date.now() + duration;
+  // 💖 Herz-Konfetti Shape (funktioniert sicher)
+  const heart = confetti.shapeFromText({ text: "💖", scalar: 2 });
 
-      // "Herz-Shapes" als Emoji-Confetti
-      const heartShapes = ["💖","💘","💗","💕","💞","❤️"];
+  // 🎆 Großes Herz-Feuerwerk
+  function heartConfettiBig() {
 
-      (function frame() {
-        // links
-        confetti({
-          particleCount: 14,
-          spread: 70,
-          startVelocity: 55,
-          scalar: 1.6,             // größer
-          ticks: 220,
-          gravity: 1.05,
-          origin: { x: 0.15, y: 0.65 },
-          shapes: ["text"],
-          shapeOptions: { text: { value: heartShapes } }
-        });
-        // rechts
-        confetti({
-          particleCount: 14,
-          spread: 70,
-          startVelocity: 55,
-          scalar: 1.6,             // größer
-          ticks: 220,
-          gravity: 1.05,
-          origin: { x: 0.85, y: 0.65 },
-          shapes: ["text"],
-          shapeOptions: { text: { value: heartShapes } }
-        });
+    // großer Boom in der Mitte
+    confetti({
+      particleCount: 90,
+      spread: 120,
+      startVelocity: 65,
+      ticks: 220,
+      gravity: 1.05,
+      origin: { x: 0.5, y: 0.6 },
+      shapes: [heart]
+    });
 
-        if (Date.now() < end) {
-          requestAnimationFrame(frame);
-        }
-      })();
+    // zusätzliche Salven links & rechts
+    const end = Date.now() + 1200;
 
-      // zusätzlich ein "Boom" in der Mitte
+    (function frame() {
       confetti({
-        particleCount: 90,
-        spread: 95,
-        startVelocity: 60,
-        scalar: 1.3,
-        origin: { x: 0.5, y: 0.6 },
-        shapes: ["text"],
-        shapeOptions: { text: { value: heartShapes } }
+        particleCount: 12,
+        spread: 80,
+        startVelocity: 55,
+        ticks: 200,
+        gravity: 1.05,
+        origin: { x: 0.18, y: 0.65 },
+        shapes: [heart]
       });
-    }
 
-    yesBtn.addEventListener("click", () => {
-      msg.textContent = "Yaaay! 💖";
-      gifwrap.style.display = "block";
+      confetti({
+        particleCount: 12,
+        spread: 80,
+        startVelocity: 55,
+        ticks: 200,
+        gravity: 1.05,
+        origin: { x: 0.82, y: 0.65 },
+        shapes: [heart]
+      });
 
-      // Herz-Konfetti abfeuern
-      heartConfettiBig();
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+  }
 
-      // sorgt dafür, dass das GIF wirklich neu startet
-      const src = gif.src;
-      gif.src = "";
-      gif.src = src;
+  // ✅ Klick auf JA
+  yesBtn.addEventListener("click", () => {
+    msg.textContent = "Yaaay! 💖";
+    gifwrap.style.display = "block";
 
-      setAnswer("yes");
-    });
+    // Herz-Feuerwerk starten
+    heartConfettiBig();
 
-    // Nein macht Ja immer größer
-    let scale = 1;
+    // GIF neu starten
+    const src = gif.src;
+    gif.src = "";
+    gif.src = src;
 
-    noBtn.addEventListener("click", () => {
-      msg.textContent = "Oh no 😭 Versuch es nochmal...";
+    setAnswer("yes");
+  });
 
-      scale += 0.25;
-      yesBtn.style.transform = `scale(${scale})`;
+  // ✅ Klick auf NEIN → Ja wird größer
+  let scale = 1;
 
-      noBtn.style.transform = "scale(0.95)";
-      setTimeout(() => (noBtn.style.transform = ""), 150);
+  noBtn.addEventListener("click", () => {
+    msg.textContent = "Oh no 😭 Versuch es nochmal...";
 
-      setAnswer("no");
-    });
+    scale += 0.25;
+    yesBtn.style.transform = `scale(${scale})`;
 
-    // Wenn Link mit Parameter geteilt wird, Zustand anzeigen
-    const a = new URLSearchParams(location.search).get("a");
-    if (a === "yes") { yesBtn.click(); }
-    if (a === "no")  { msg.textContent = "Hmm… noch unsicher? 🥺"; }
-  </script>
-</body>
-</html>
+    noBtn.style.transform = "scale(0.95)";
+    setTimeout(() => (noBtn.style.transform = ""), 150);
+
+    setAnswer("no");
+  });
+
+  // Zustand beim Öffnen aus URL lesen
+  const a = new URLSearchParams(location.search).get("a");
+  if (a === "yes") yesBtn.click();
+  if (a === "no") msg.textContent = "Hmm… noch unsicher? 🥺";
+</script>
+
 
